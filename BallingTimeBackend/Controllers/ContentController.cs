@@ -31,17 +31,17 @@ namespace BallingTimeBackend.Controllers
         }
 
         [HttpGet]
-        [Route("getAllDribblingExercises")]
-        public JsonResult GetAllDribblingExercises()
+        [Route("getAllDribblingDrills")]
+        public JsonResult GetAllDribblingDrills()
         {
-            return Json(_contentRepository.GetAllDribblingExercises());
+            return Json(_contentRepository.GetAllDribblingDrills());
         }
 
         [HttpPost]
-        [Route("addDribblingExercise")]
-        public JsonResult AddDribblingExercise(string name, string description, string videoReference)
+        [Route("addDribblingDrill")]
+        public JsonResult AddDribblingDrill(string name, string description, string videoReference)
         {
-            return Json(_contentRepository.AddDribblingExercise(name, description, videoReference));
+            return Json(_contentRepository.AddDribblingDrill(name, description, videoReference));
         }
 
         [HttpPost]
@@ -52,10 +52,17 @@ namespace BallingTimeBackend.Controllers
         }
 
         [HttpPost]
-        [Route("getUserProgressById")]
-        public JsonResult GetUserProgressById(int userId)
+        [Route("getUserStatsById")]
+        public JsonResult GetUserStatsById(int userId)
         {
-            return Json(_contentRepository.GetUserProgressById(userId));
+            return Json(_contentRepository.GetUserStatsById(userId));
+        }
+
+        [HttpPost]
+        [Route("checkDayOfPractice")]
+        public JsonResult CheckDayOfPractice(int userId)
+        {
+            return Json(_contentRepository.CheckDayOfPractice(userId));
         }
     }
 }

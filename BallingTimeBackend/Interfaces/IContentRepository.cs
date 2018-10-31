@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BallingTimeBackend.Models;
+using BallingTimeBackend.Data_for_frontend;
 
 namespace BallingTimeBackend.Interfaces
 {
@@ -10,9 +11,10 @@ namespace BallingTimeBackend.Interfaces
     {
         bool AddDifficulty(int secondsForExercise, int difficultyLevel);
         List<Difficulty> GetAllDifficulties();
-        bool AddDribblingExercise(string name, string description, string videoReference);
-        List<DribblingDrill> GetAllDribblingExercises();
-        List<Tuple<DribblingDrill, double, double>> GetUserProgressById(int userId);
-        Tuple<List<DribblingDrill>, Difficulty> GetFullTrainingProgramById(int userId);
+        bool AddDribblingDrill(string name, string description, string videoReference);
+        List<DribblingDrill> GetAllDribblingDrills();
+        List<UserStats> GetUserStatsById(int userId);
+        List<Drill_Info> GetFullTrainingProgramById(int userId);
+        bool CheckDayOfPractice(int userId);
     }
 }

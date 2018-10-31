@@ -33,6 +33,9 @@ namespace BallingTimeBackend.Models
         public string PracticeDays { get; set; }
 
         public ICollection<UserProgress> UserProgresses { get; set; }
+        
+        public int DifficultyId { get; set; }
+        public Difficulty Difficulty { get; set; }
 
         public User() {
             UserProgresses = new List<UserProgress>();

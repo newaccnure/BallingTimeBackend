@@ -48,7 +48,7 @@ namespace BallingTimeBackend.Models
                 
                 context.SaveChanges();
 
-                #region Adding training pragram
+                #region Adding training program
                 var easyDifficulty = context.Difficulties.Where(x => x.DifficultyLevel.Equals(1)).First();
                 var mediumDifficulty = context.Difficulties.Where(x => x.DifficultyLevel.Equals(2)).First();
 
@@ -95,7 +95,7 @@ namespace BallingTimeBackend.Models
 
                 if (Int32.TryParse(node.InnerHtml[0].ToString(), out int number))
                 {
-                    drillNamesList.Add(node.InnerHtml.Replace("&#8211;", "-"));
+                    drillNamesList.Add(node.InnerHtml.Substring(node.InnerHtml.IndexOf('.') + 2).Replace("&#8211;", "-"));
                 }
             }
             return drillNamesList;

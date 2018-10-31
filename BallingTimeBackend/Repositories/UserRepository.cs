@@ -33,7 +33,8 @@ namespace BallingTimeBackend.Repositories
                 Name = name,
                 Email = email,
                 Password = password,
-                PracticeDays = JsonConvert.SerializeObject(practiceDays)
+                PracticeDays = JsonConvert.SerializeObject(practiceDays),
+                Difficulty = _context.Difficulties.Where(x => x.DifficultyLevel == 1).First()
             });
 
             _context.SaveChanges();

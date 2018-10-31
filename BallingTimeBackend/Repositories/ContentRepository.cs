@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BallingTimeBackend.Interfaces;
 using BallingTimeBackend.Models;
+using BallingTimeBackend.Data_for_frontend;
+using Newtonsoft.Json;
 
 namespace BallingTimeBackend.Repositories
 {
@@ -39,9 +41,9 @@ namespace BallingTimeBackend.Repositories
             return _context.Difficulties.ToList();
         }
 
-        public bool AddDribblingExercise(string name, string description, string videoReference)
+        public bool AddDribblingDrill(string name, string description, string videoReference)
         {
-            Regex regex = new Regex("/(youtu\\.be\\/|youtube\\.com\\/(watch\\?(.*&)?v=|(embed|v)\\/))([^\\?&\"\'>]+)/");
+            Regex regex = new Regex("(youtu\\.be\\/|youtube\\.com\\/(watch\\?(.*&)?v=|(embed|v)\\/))([^\\?&\"\'>]+)");
             if (_context.DribblingDrills.Where(de => de.Name.Equals(name)).Any())
             {
                 return false;
@@ -61,52 +63,194 @@ namespace BallingTimeBackend.Repositories
             return true;
         }
 
-        public List<DribblingDrill> GetAllDribblingExercises()
+        public List<DribblingDrill> GetAllDribblingDrills()
         {
             return _context.DribblingDrills.ToList();
         }
 
-        public Tuple<List<DribblingDrill>, Difficulty> GetFullTrainingProgramById(int userId)
+        public List<Drill_Info> GetFullTrainingProgramById(int userId)
         {
-            //var user = _context.Users.Where(u => u.Id == userId).First();
-            if (_context.Users.Where(u => u.Id == userId).Count() == 0) return null;
+            if (_context.Users.Where(u => u.Id == userId).Count() == 0) return new List<Drill_Info>();
 
-            var lastPractice = 
+            var user = _context.Users.Where(u => u.Id == userId).First();
+
+            List<DribblingDrill> allPracticeDrills =
+                   _context
+                   .TrainingPrograms
+                   .Where(x => x.Difficulty == user.Difficulty)
+                   .Select(x => x.DribblingDrill)
+                   .ToList();
+
+            if (!IsPracticeFinished(userId)) {
+                DateTime lastPracticeDate =
+                    _context
+                    .UserProgresses
+                    .Where(up => up.UserId == userId)
+                    .Select(userProgress => userProgress.Date)
+                    .Max();
+
+                List<DribblingDrill> drillsInlastPractice =
+                    _context
+                    .UserProgresses
+                    .Where(up => up.UserId == userId && up.Date.Equals(lastPracticeDate))
+                    .Select(up => up.DribblingDrill)
+                    .ToList();
+
+                return new List<Drill_Info>(
+                        allPracticeDrills
+                        .Select(x => new Drill_Info()
+                            {
+                                IsCompleted = drillsInlastPractice.Contains(x),
+                                SecondsForExercise = user.Difficulty.SecondsForExercise,
+                                DifficultyId = user.Difficulty.Id,
+                                DrillId = x.Id,
+                                Name = x.Name,
+                                Description = x.Description,
+                                VideoReference = x.VideoReference
+                            }));
+            }
+
+            CheckUserLevel(userId);
+
+            return new List<Drill_Info>(
+                        allPracticeDrills
+                        .Select(x => new Drill_Info()
+                        {
+                            IsCompleted = false,
+                            SecondsForExercise = user.Difficulty.SecondsForExercise,
+                            DifficultyId = user.Difficulty.Id,
+                            DrillId = x.Id,
+                            Name = x.Name,
+                            Description = x.Description,
+                            VideoReference = x.VideoReference
+                        })); 
+        }
+
+        public bool CheckDayOfPractice(int userId) {
+
+            if (_context.Users.Where(u => u.Id == userId).Count() == 0) {
+                return false;
+            }
+
+            var user = _context.Users.Where(u => u.Id == userId).First();
+
+            DayOfWeek today = DateTime.Now.DayOfWeek;
+
+            List<int> practiceDays = JsonConvert.DeserializeObject<List<int>>(user.PracticeDays);
+
+            return practiceDays.Contains((int)today);
+        }
+
+        public List<UserStats> GetUserStatsById(int userId)
+        {
+            if (_context.Users.Where(u => u.Id == userId).Count() == 0) {
+                return new List<UserStats>();
+            }
+            var user = _context.Users.Where(u => u.Id == userId).First();
+
+            List<UserStats> allPracticeDrillsStats =
+                   _context
+                   .UserProgresses
+                   .Where(x => x.UserId == userId)
+                   .GroupBy(up => new { up.Date })
+                   .OrderBy(x => x.Key.Date)
+                   .Select(x => new UserStats()
+                   {
+                       AverageSpeed = x.Average(y => y.Accuracy),
+                       AverageRepsPerSec = x.Average(y => y.RepeationsPerSecond)
+                   })
+                   .ToList();
+
+            return allPracticeDrillsStats;
+        }
+
+        private void CheckUserLevel(int userId) {
+            List<int> allDifficultyLevels = 
+                _context
+                .Difficulties
+                .Select(x => x.DifficultyLevel)
+                .ToList();
+
+            allDifficultyLevels.Sort();
+
+            User user = 
+                _context
+                .Users
+                .Where(u => u.Id == userId)
+                .First();
+
+            if (user.Difficulty.DifficultyLevel == allDifficultyLevels.Max()) return;
+
+            DateTime lastPracticeDate =
                 _context
                 .UserProgresses
                 .Where(up => up.UserId == userId)
                 .Select(userProgress => userProgress.Date)
                 .Max();
 
-            var lastPracticeDrills = 
+            List<UserProgress> lastPracticeDrills =
                 _context
                 .UserProgresses
-                .Where(up => up.UserId == userId && up.Date.Equals(lastPractice));
+                .Where(up => up.UserId == userId && up.Date.Equals(lastPracticeDate))
+                .ToList();
 
-            var lastAccuracy = 
+            List<double> lastPracticeAccuracy =
                 lastPracticeDrills
-                .Select(x => x.Accuracy);
+                .Select(x => x.Accuracy)
+                .ToList();
 
-            var lastRepsPerSec =
+            List<double> lastPracticeRepsPerSec =
                 lastPracticeDrills
-                .Select(x => x.RepeationsPerSecond);
+                .Select(x => x.RepeationsPerSecond)
+                .ToList();
 
-            var userDrillHistory =
+            List<double> userOverallAverageRepPerSecAcrossAllDrills =
                 _context
                 .UserProgresses
+                .Where(up => up.UserId == userId)
                 .GroupBy(up => new { up.UserId, up.DribblingDrillId })
-                .Select(x => x.Average(y => y.RepeationsPerSecond));
+                .Select(x => x.Average(y => y.RepeationsPerSecond))
+                .ToList();
 
-            var numberOfIncreasedReps = 
+            List<double> userOverallAverageAccuracyAcrossAllDrills =
+                _context
+                .UserProgresses
+                .Where(up => up.UserId == userId)
+                .GroupBy(up => new { up.UserId, up.DribblingDrillId })
+                .Select(x => x.Average(y => y.Accuracy))
+                .ToList();
 
             throw new NotImplementedException();
         }
-        
-        public List<Tuple<DribblingDrill, double, double>> GetUserProgressById(int userId)
-        {
-            //TODO
-            //Add dates to UserProgress(making time-based graphs); Storing Lists of progress for specific exercise;
-            throw new NotImplementedException();
+
+        private bool IsPracticeFinished(int userId) {
+            var user = _context
+                .Users
+                .Where(u => u.Id == userId)
+                .First();
+
+            DateTime lastPracticeDate =
+                _context
+                .UserProgresses
+                .Where(up => up.UserId == userId)
+                .Select(userProgress => userProgress.Date)
+                .Max();
+
+            int numberOfDrillsInlastPractice =
+                _context
+                .UserProgresses
+                .Where(up => up.UserId == userId && up.Date.Equals(lastPracticeDate))
+                .Select(up => up.DribblingDrillId)
+                .Count();
+
+            int numberOfDrillsInPractice =
+                _context
+                .TrainingPrograms
+                .Where(x => x.Difficulty == user.Difficulty)
+                .Count();
+
+            return numberOfDrillsInPractice == numberOfDrillsInlastPractice;
         }
+
     }
 }
