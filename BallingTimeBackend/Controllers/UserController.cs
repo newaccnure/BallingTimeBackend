@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BallingTimeBackend.Interfaces;
+using Microsoft.AspNetCore.Cors;
 
 namespace BallingTimeBackend.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("AllowSpecificOrigin")]
     public class UserController : Controller
     {
         public IUserRepository _userRepository;
@@ -18,7 +20,7 @@ namespace BallingTimeBackend.Controllers
 
         [HttpPost]
         [Route("addUser")]
-        public JsonResult AddUser(string name, string email, string password, 
+        public JsonResult AddUser(string name, string email, string password,
             string checkPassword, List<int> practiceDays)
         {
             return Json(_userRepository.AddUser(name, email, password, checkPassword, practiceDays));
@@ -57,6 +59,11 @@ namespace BallingTimeBackend.Controllers
         public JsonResult GetUserById(int userId)
         {
             return Json(_userRepository.GetUserById(userId));
+        }
+        [HttpGet]
+        [Route("getAllUsers")]
+        public JsonResult GetAllUsers() {
+            return Json(_userRepository.GetAllUsers());
         }
     }
 }

@@ -77,7 +77,7 @@ namespace BallingTimeBackend.Repositories
             List<DribblingDrill> allPracticeDrills =
                    _context
                    .TrainingPrograms
-                   .Where(x => x.Difficulty == user.Difficulty)
+                   .Where(x => x.DifficultyId == user.DifficultyId)
                    .Select(x => x.DribblingDrill)
                    .ToList();
 
@@ -224,11 +224,13 @@ namespace BallingTimeBackend.Repositories
         }
 
         private bool IsPracticeFinished(int userId) {
+
             var user = _context
                 .Users
                 .Where(u => u.Id == userId)
                 .First();
 
+            
             DateTime lastPracticeDate =
                 _context
                 .UserProgresses

@@ -6,6 +6,7 @@ using BallingTimeBackend.Models;
 using BallingTimeBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using BallingTimeBackend.Data_for_frontend;
 
 namespace BallingTimeBackend.Repositories
 {
@@ -85,8 +86,17 @@ namespace BallingTimeBackend.Repositories
             }
         }
 
-        public User GetUserById(int userId) {
-            return _context.Users.Where(user => user.Id == userId).First();
+        public User_shortened_model GetUserById(int userId) {
+            return _context.Users.Where(user => user.Id == userId).Select(x => new User_shortened_model() {
+                Id = x.Id,
+                Email = x.Email,
+                Name = x.Name,
+                Password = x.Password,
+                PracticeDays = JsonConvert.DeserializeObject<List<int>>(x.PracticeDays)
+            }).First();
+        }
+        public List<User> GetAllUsers() {
+            return _context.Users.ToList();
         }
     }
 }

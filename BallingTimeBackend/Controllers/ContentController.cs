@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BallingTimeBackend.Interfaces;
+using Microsoft.AspNetCore.Cors;
 
 namespace BallingTimeBackend.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("AllowSpecificOrigin")]
     public class ContentController : Controller
     {
         public IContentRepository _contentRepository;
