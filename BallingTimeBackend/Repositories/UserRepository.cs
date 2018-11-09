@@ -95,8 +95,14 @@ namespace BallingTimeBackend.Repositories
                 PracticeDays = JsonConvert.DeserializeObject<List<int>>(x.PracticeDays)
             }).First();
         }
+        
         public List<User> GetAllUsers() {
             return _context.Users.ToList();
+        }
+
+        public int GetUserIdByEmail(string email)
+        {
+            return _context.Users.Where(user => user.Email == email).First().Id;
         }
     }
 }

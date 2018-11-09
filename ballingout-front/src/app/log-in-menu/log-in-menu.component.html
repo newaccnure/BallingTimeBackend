@@ -1,19 +1,24 @@
 <app-header></app-header>
 <!-- <img src="../../assets/images/basketball.jpg" class="basketball-img"> -->
-<div class="example-container">
+<div>
+  <div class="image">
+    <img src="../../assets/images/stopwatch-basketball-clipart-9.jpg"/>
+  </div>
+  <div class="example-container">
 
-  <mat-label>Email:</mat-label>
-  <mat-form-field>
-    <input matInput>
-  </mat-form-field>
+    <mat-label>Email:</mat-label>
+    <mat-form-field>
+      <input matInput [(ngModel)]="email">
+    </mat-form-field>
 
-  <mat-label>Password:</mat-label>
-  <mat-form-field>
-    <input type="password" matInput>
-  </mat-form-field>
+    <mat-label>Password:</mat-label>
+    <mat-form-field>
+      <input type="password" matInput [(ngModel)]="password">
+    </mat-form-field>
 
-  <button mat-raised-button class="log-in-confirm-button" onclick="console.log(1)">
-    Log in
-  </button>
+    <button mat-raised-button class="log-in-confirm-button" (click)="logIn()">
+      Log in
+    </button>
 
+  </div>
 </div>

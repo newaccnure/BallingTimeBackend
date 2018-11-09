@@ -1,0 +1,58 @@
+<app-header></app-header>
+<!-- <img src="../../assets/images/basketball.jpg" class="basketball-img"> -->
+<div>
+  <div class="image">
+    <img src="../../assets/images/stopwatch-basketball-clipart-9.jpg" />
+  </div>
+  <div class="example-container">
+
+    <mat-label>Email:</mat-label>
+    <mat-form-field>
+      <input matInput [(ngModel)]="user.Email">
+    </mat-form-field>
+
+    <mat-label>Your name:</mat-label>
+    <mat-form-field>
+      <input matInput [(ngModel)]="user.Name">
+    </mat-form-field>
+
+    <mat-label>Password:</mat-label>
+    <mat-form-field>
+      <input type="password" matInput [(ngModel)]="user.Password">
+    </mat-form-field>
+
+    <mat-label>Confirm password:</mat-label>
+    <mat-form-field>
+      <input type="password" matInput [(ngModel)]="confirmPassword">
+    </mat-form-field>
+
+    <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+
+            <mat-panel-title>
+              Practice days
+            </mat-panel-title>
+
+            <mat-panel-description>
+              Choose days for your practice
+            </mat-panel-description>
+            
+          </mat-expansion-panel-header>
+          <div class="selection-list-practice-days"> 
+              <mat-selection-list #shoes [(ngModel)]="array">
+                <mat-list-option *ngFor="let shoe of typesOfShoes">
+                  {{shoe}}
+                </mat-list-option>
+              </mat-selection-list>
+            </div>
+          </mat-expansion-panel>
+        <p></p>
+      </mat-accordion>
+
+    <button mat-raised-button class="log-in-confirm-button" (click)="signUp()">
+      Sign up
+    </button>
+
+  </div>
+</div>

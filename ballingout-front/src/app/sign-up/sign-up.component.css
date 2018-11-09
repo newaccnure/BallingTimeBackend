@@ -1,0 +1,7 @@
+.selection-list-practice-days{
+    flex-grow: 1;
+    overflow: auto;
+}
+::ng-deep .mat-expansion-panel{
+    background-color: #84ceeb;
+}

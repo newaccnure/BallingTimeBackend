@@ -16,6 +16,7 @@ namespace BallingTimeBackend.Interfaces
         bool ChangePassword(string email, string oldPassword, string newPassword, string checkPassword);
         bool DeleteAccount(string email);
         User_shortened_model GetUserById(int userId);
+        int GetUserIdByEmail(string email);
         List<User> GetAllUsers();
     }
 }
