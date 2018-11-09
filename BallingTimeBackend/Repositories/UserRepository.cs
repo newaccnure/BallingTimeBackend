@@ -71,6 +71,13 @@ namespace BallingTimeBackend.Repositories
                 return false;
             else if (_context.Users.Where(u => u.Email == email).First().Password != password)
                 return false;
+
+            int userId = GetUserIdByEmail(email);
+
+            if (CheckDayOfPractice(userId)) {
+                MakeTrainingProgramForToday(userId);
+            }
+
             return true;
         }
 
@@ -103,6 +110,105 @@ namespace BallingTimeBackend.Repositories
         public int GetUserIdByEmail(string email)
         {
             return _context.Users.Where(user => user.Email == email).First().Id;
+        }
+
+        private void MakeTrainingProgramForToday(int userId) {
+            CheckUserLevel(userId);
+            User user = GetUser(userId);
+
+            if (_context
+                .UserProgresses
+                .Where(up => up.UserId == userId && up.Date == DateTime.Today)
+                .Count() > 0)
+                return;
+
+            var dribblingDrills = 
+                _context
+                .TrainingPrograms
+                .Where(tp => tp.DifficultyId == user.DifficultyId);
+
+            foreach (var dribblingDrill in dribblingDrills) {
+                _context.UserProgresses.Add(new UserProgress() {
+                    isCompleted = false,
+                    Date = DateTime.Today,
+                    DribblingDrillId = dribblingDrill.DribblingDrillId,
+                    UserId = userId
+                });
+            }
+            _context.SaveChanges();
+        }
+        private void CheckUserLevel(int userId)
+        {
+            List<int> allDifficultyLevels =
+                _context
+                .Difficulties
+                .Select(x => x.DifficultyLevel)
+                .ToList();
+
+            allDifficultyLevels.Sort();
+
+            User user = GetUser(userId);
+
+            var userDifficulty = GetUserDifficulty(user);
+
+            if (userDifficulty.DifficultyLevel == allDifficultyLevels.Max()) 
+                return;
+
+            if (user.UserProgresses.Count == 0)
+                return;
+
+            DateTime lastPracticeDate =
+                _context
+                .UserProgresses
+                .Where(up => up.UserId == userId)
+                .Select(userProgress => userProgress.Date)
+                .Max();
+
+            List<UserProgress> lastPracticeDrills =
+                _context
+                .UserProgresses
+                .Where(up => up.UserId == userId && up.Date.Equals(lastPracticeDate))
+                .ToList();
+
+            double lastPracticeAccuracy =
+                lastPracticeDrills
+                .Select(x => x.Accuracy)
+                .ToList()
+                .Average();
+
+            double userOverallAverageAccuracyAcrossAllDrills =
+                _context
+                .UserProgresses
+                .Where(up => up.UserId == userId)
+                .GroupBy(up => new { up.UserId, up.DribblingDrillId })
+                .Select(x => x.Average(y => y.Accuracy))
+                .ToList()
+                .Average();
+
+            //if (lastPracticeAccuracy > userOverallAverageAccuracyAcrossAllDrills) {
+            //    var user
+            //    user.DifficultyId = _context.Difficulties.Where(dif=>dif.DifficultyLevel = allDifficultyLevels[allDifficultyLevels.IndexOf(user.)])
+            //}
+        }
+        private Difficulty GetUserDifficulty(User user) {
+            return _context.Difficulties.Where(dif => dif.Id == user.DifficultyId).First();
+        }
+        private User GetUser(int userId) {
+            return _context.Users.Where(u => u.Id == userId).First();
+        }
+        private bool CheckDayOfPractice(int userId) {
+            if (_context.Users.Where(u => u.Id == userId).Count() == 0)
+            {
+                return false;
+            }
+
+            var user = _context.Users.Where(u => u.Id == userId).First();
+
+            DayOfWeek today = DateTime.Now.DayOfWeek;
+
+            List<int> practiceDays = JsonConvert.DeserializeObject<List<int>>(user.PracticeDays);
+
+            return practiceDays.Contains((int)today);
         }
     }
 }

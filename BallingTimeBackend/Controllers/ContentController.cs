@@ -45,26 +45,5 @@ namespace BallingTimeBackend.Controllers
         {
             return Json(_contentRepository.AddDribblingDrill(name, description, videoReference));
         }
-
-        [HttpPost]
-        [Route("getFullTrainingProgramById")]
-        public JsonResult GetFullTrainingProgramById(int userId)
-        {
-            return Json(_contentRepository.GetFullTrainingProgramById(userId));
-        }
-
-        [HttpPost]
-        [Route("getUserStatsById")]
-        public JsonResult GetUserStatsById(int userId)
-        {
-            return Json(_contentRepository.GetUserStatsById(userId));
-        }
-
-        [HttpPost]
-        [Route("checkDayOfPractice")]
-        public JsonResult CheckDayOfPractice(int userId)
-        {
-            return Json(_contentRepository.CheckDayOfPractice(userId));
-        }
     }
 }

@@ -13,8 +13,5 @@ namespace BallingTimeBackend.Interfaces
         List<Difficulty> GetAllDifficulties();
         bool AddDribblingDrill(string name, string description, string videoReference);
         List<DribblingDrill> GetAllDribblingDrills();
-        List<UserStats> GetUserStatsById(int userId);
-        List<Drill_Info> GetFullTrainingProgramById(int userId);
-        bool CheckDayOfPractice(int userId);
     }
 }

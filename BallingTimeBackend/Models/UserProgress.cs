@@ -15,6 +15,8 @@ namespace BallingTimeBackend.Models
 
         public double Accuracy { get; set; }
 
+        public bool isCompleted { get; set; }
+
         [Required]
         public DateTime Date { get; set; }
 
