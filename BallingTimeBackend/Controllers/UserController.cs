@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BallingTimeBackend.Interfaces;
 using Microsoft.AspNetCore.Cors;
+using Newtonsoft.Json;
 
 namespace BallingTimeBackend.Controllers
 {
@@ -21,9 +22,10 @@ namespace BallingTimeBackend.Controllers
         [HttpPost]
         [Route("addUser")]
         public JsonResult AddUser(string name, string email, string password,
-            string checkPassword, List<int> practiceDays)
+            string checkPassword, string practiceDays)
         {
-            return Json(_userRepository.AddUser(name, email, password, checkPassword, practiceDays));
+            return Json(_userRepository.AddUser(name, email,
+                password, checkPassword, JsonConvert.DeserializeObject<List<int>>(practiceDays)));
         }
 
         [HttpPost]

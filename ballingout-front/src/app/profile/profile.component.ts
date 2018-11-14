@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { AuthService } from '../services/auth.service';
+import { Router } from "@angular/router";
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -7,9 +10,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private authService: AuthService,
+    private router: Router) { }
 
   ngOnInit() {
   }
-
+  
+  unAuthorized(){
+    if (!this.authService.isAuthorized()){
+      this.router.navigate(['/home']);
+    }
+  }
 }

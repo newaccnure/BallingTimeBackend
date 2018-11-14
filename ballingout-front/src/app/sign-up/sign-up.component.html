@@ -26,29 +26,13 @@
       <input type="password" matInput [(ngModel)]="confirmPassword">
     </mat-form-field>
 
-    <mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-
-            <mat-panel-title>
-              Practice days
-            </mat-panel-title>
-
-            <mat-panel-description>
-              Choose days for your practice
-            </mat-panel-description>
-            
-          </mat-expansion-panel-header>
-          <div class="selection-list-practice-days"> 
-              <mat-selection-list #shoes [(ngModel)]="array">
-                <mat-list-option *ngFor="let shoe of typesOfShoes">
-                  {{shoe}}
-                </mat-list-option>
-              </mat-selection-list>
-            </div>
-          </mat-expansion-panel>
-        <p></p>
-      </mat-accordion>
+    <div class="selection-list-practice-days">
+      <mat-form-field>
+        <mat-select placeholder="Practice days" [(ngModel)]="this.array" multiple>
+          <mat-option *ngFor="let day of daysOfWeek" [value]="day">{{day}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
     <button mat-raised-button class="log-in-confirm-button" (click)="signUp()">
       Sign up

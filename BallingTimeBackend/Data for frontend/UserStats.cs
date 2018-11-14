@@ -9,5 +9,6 @@ namespace BallingTimeBackend.Data_for_frontend
     {
         public double AverageSpeed { get; set; }
         public double AverageRepsPerSec { get; set; }
+        public double AverageAccuracy { get; set; }
     }
 }

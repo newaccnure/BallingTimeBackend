@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { User } from '../models/user.model';
 import { Router } from "@angular/router";
-import { Location } from "@angular/common";
 import { MatSnackBar } from '@angular/material';
-
+import { ViewChild } from '@angular/core';
 @Component({
   selector: 'app-log-in-menu',
   templateUrl: './log-in-menu.component.html',

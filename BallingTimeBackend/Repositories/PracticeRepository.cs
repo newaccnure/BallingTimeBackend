@@ -49,7 +49,7 @@ namespace BallingTimeBackend.Repositories
                         Description = dribblingDrill.Description,
                         DifficultyId = userDifficulty.Id,
                         DrillId = dribblingDrill.Id,
-                        IsCompleted = x.isCompleted,
+                        IsCompleted = x.IsCompleted,
                         SecondsForExercise = userDifficulty.SecondsForExercise,
                         Name = dribblingDrill.Name,
                         VideoReference = dribblingDrill.VideoReference
@@ -87,12 +87,13 @@ namespace BallingTimeBackend.Repositories
                    _context
                    .UserProgresses
                    .Where(x => x.UserId == userId)
-                   .GroupBy(up => new { up.Date })
+                   .GroupBy(up => up.Date)
                    .OrderBy(x => x.Key.Date)
                    .Select(x => new UserStats()
                    {
-                       AverageSpeed = x.Average(y => y.Accuracy),
-                       AverageRepsPerSec = x.Average(y => y.RepeationsPerSecond)
+                       AverageSpeed = x.Average(y => y.AverageSpeed),
+                       AverageRepsPerSec = x.Average(y => y.RepeationsPerSecond),
+                       AverageAccuracy = x.Average(y => y.Accuracy)
                    })
                    .ToList();
 
@@ -118,7 +119,7 @@ namespace BallingTimeBackend.Repositories
             drillProgress.Accuracy = averageAccuracy;
             drillProgress.AverageSpeed = averageSpeed;
             drillProgress.RepeationsPerSecond = repeatitionsPerSecond;
-            drillProgress.isCompleted = true;
+            drillProgress.IsCompleted = true;
 
             _context.SaveChanges();
 

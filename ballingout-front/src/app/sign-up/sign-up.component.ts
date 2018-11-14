@@ -3,6 +3,9 @@ import { User } from '../models/user.model';
 import { AuthService } from '../services/auth.service';
 import { Observable } from 'rxjs';
 import { MatListOption } from '@angular/material';
+import { FormControl } from '@angular/forms';
+import { Router } from "@angular/router";
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-sign-up',
@@ -14,11 +17,17 @@ import { MatListOption } from '@angular/material';
   providers: [AuthService]
 })
 export class SignUpComponent implements OnInit {
-  typesOfShoes: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+  daysOfWeek: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  daysOfWeekNumbers: number[] = [1, 2, 3, 4, 5, 6, 0];
   user: User;
   confirmPassword: string;
   array: any;
-  constructor(private authService: AuthService) { }
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    public snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.user = new User();
@@ -26,17 +35,30 @@ export class SignUpComponent implements OnInit {
   }
 
   signUp() {
-    // let key = 'Item 1';
-    // localStorage.setItem(key, 'Value');
-    //console.log(this.user.Email + ' ' + this.user.Name + ' ' + this.user.Password + ' ' + this.confirmPassword);
     
-    console.log(this.array.selectedOptions);
-    // this.authService.addUser(this.user, this.confirmPassword).subscribe(data => {
-    //   if (data == true) {
-    //     console.log('Signed up');
-    //   }
-    //  });
-    // console.log(localStorage.getItem(key));
+    var indexArray = [];
+    this.array.forEach(element => {
+      indexArray.push(this.daysOfWeekNumbers[this.daysOfWeek.indexOf(element)])
+    });
+    this.user.PracticeDays = indexArray;
+    console.log(this.user.PracticeDays);
+    this.authService.addUser(this.user, this.confirmPassword).subscribe(data => {
+      if (data == true) {
+        this.authService.getUserIdByEmail(this.user.Email).subscribe(id => {
+          let key = 'currentUser';
+          let currentDate = new Date();
+          localStorage.setItem(key, JSON.stringify({
+            userId: id,
+            logInDate: currentDate.toDateString()
+          }));
+          this.router.navigate(['/home']);
+        });
+      } else {
+        this.snackBar.open("Failed to login. Please try again!", "", {
+          duration: 5000,
+        });
+      }
+     });
   }
 
 }

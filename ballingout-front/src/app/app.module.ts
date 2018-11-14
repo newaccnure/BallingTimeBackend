@@ -4,7 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { DemoMaterialModule } from './material.module';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
@@ -15,6 +15,7 @@ import { LogInMenuComponent } from './log-in-menu/log-in-menu.component';
 import { ProfileComponent } from './profile/profile.component';
 import { LogOutComponent } from './log-out/log-out.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { PracticeComponent } from './practice/practice.component';
 
 import { AuthService } from './services/auth.service';
 import { PracticeService } from './services/practice.service';
@@ -28,7 +29,8 @@ import { PracticeService } from './services/practice.service';
     LogInMenuComponent,
     ProfileComponent,
     LogOutComponent,
-    SignUpComponent
+    SignUpComponent,
+    PracticeComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +39,8 @@ import { PracticeService } from './services/practice.service';
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    ReactiveFormsModule
   ],
   providers: [AuthService, PracticeService],
   bootstrap: [AppComponent]

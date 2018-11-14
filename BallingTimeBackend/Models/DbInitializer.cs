@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 
 namespace BallingTimeBackend.Models
 {
@@ -78,9 +79,64 @@ namespace BallingTimeBackend.Models
                 }
                 #endregion
 
+                context.Users.Add(new User()
+                {
+                    DifficultyId = context.Difficulties.Where(dif => dif.DifficultyLevel == 1).First().Id,
+                    Email = "john@google.com",
+                    Name = "John",
+                    Password = "john",
+                    PracticeDays = JsonConvert.SerializeObject(new List<int>() { 0, 1, 2, 3, 4, 5, 6 })
+                });
+
+                context.SaveChanges();
+                
+                #region Adding artificial user stats
+                DateTime currentDay = DateTime.Now.AddDays(-10);
+                User john = context.Users.Where(user => user.Email == "john@google.com").First();
+                List<int> drillIdList = 
+                    context
+                    .TrainingPrograms
+                    .Where(tp => tp.DifficultyId == john.DifficultyId)
+                    .Select(x=>x.DribblingDrillId)
+                    .ToList();
+
+                var startAccuracy = 0.7;
+                var endAccuracy = 0.9;
+
+                var startAverageSpeed = 10;
+                var endAverageSpeed = 20;
+
+                var startRepetitionsPerSecond = 0.7;
+                var endRepetitionsPerSecond = 1;
+
+                Random r = new Random();
+                for (int i = 1; i <= 10; i++) {
+                    for (int j = 0; j < drillIdList.Count; j++) {
+                        context.UserProgresses.Add(new UserProgress()
+                        {
+                            Accuracy = Math.Sqrt(startAccuracy * startAccuracy 
+                            + (endAccuracy * endAccuracy - startAccuracy * startAccuracy) / 10 * (i + r.NextDouble())),
+
+                            AverageSpeed = Math.Sqrt(startAverageSpeed * startAverageSpeed 
+                            + (endAverageSpeed * endAverageSpeed - startAverageSpeed * startAverageSpeed) / 10 * (i + r.NextDouble())),
+
+                            RepeationsPerSecond = Math.Sqrt(startRepetitionsPerSecond * startRepetitionsPerSecond
+                            + (endRepetitionsPerSecond * endRepetitionsPerSecond 
+                            - startRepetitionsPerSecond * startRepetitionsPerSecond) / 10 * (i + r.NextDouble())),
+
+                            Date = currentDay,
+                            DribblingDrillId = drillIdList[j],
+                            IsCompleted = true,
+                            UserId = john.Id
+                        });
+                    }
+                    currentDay = currentDay.AddDays(1);
+                }
+                #endregion
+
                 context.SaveChanges();
             }
-                
+
         }
 
         static List<string> GetDrillNames(HtmlDocument doc)

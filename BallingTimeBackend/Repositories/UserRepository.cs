@@ -129,7 +129,7 @@ namespace BallingTimeBackend.Repositories
 
             foreach (var dribblingDrill in dribblingDrills) {
                 _context.UserProgresses.Add(new UserProgress() {
-                    isCompleted = false,
+                    IsCompleted = false,
                     Date = DateTime.Today,
                     DribblingDrillId = dribblingDrill.DribblingDrillId,
                     UserId = userId

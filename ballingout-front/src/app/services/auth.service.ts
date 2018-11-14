@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { User } from '../models/user.model';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { jsonpCallbackContext } from '@angular/common/http/src/module';
 
+import { User } from '../models/user.model';
 @Injectable()
 export class AuthService {
 
@@ -19,18 +18,19 @@ export class AuthService {
     return false;
   }
 
-  addUser(user: User, confirmPassword: number): Observable<Object> {
+  addUser(user: User, confirmPassword: string): Observable<Object> {
     let requestUrl: string = environment.apiUrl + "/user/addUser";
+    const myheader = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
 
-    const body = {
-      email: user.Email,
-      password: user.Password,
-      name: user.Name,
-      checkPassword: user.Password,
-      practiceDays: user.PracticeDays
-    };
+    let body = new HttpParams();
+    body = body.set('email', user.Email);
+    body = body.set('password', user.Password);
+    body = body.set('name', user.Name);
+    body = body.set('practiceDays', JSON.stringify(user.PracticeDays));
+    body = body.set('checkPassword', confirmPassword);
+
     return this.http
-      .post(requestUrl, body);
+      .post(requestUrl, body, { headers: myheader });
   }
 
   checkUser(email: string, password: string): Observable<Object> {

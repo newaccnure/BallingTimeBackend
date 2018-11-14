@@ -32,6 +32,7 @@ namespace BallingTimeBackend
 
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IContentRepository, ContentRepository>();
+            services.AddTransient<IPracticeRepository, PracticeRepository>();
 
             services.AddSwaggerGen(c =>
             {

@@ -1,0 +1,30 @@
+<div *ngIf="unAuthorized()">
+</div>
+<app-header></app-header>
+
+<div *ngFor="let drill of drills">
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+
+      <mat-panel-title>
+        {{drill.drillId}}
+        {{drill.name}}
+      </mat-panel-title>
+
+      <mat-panel-description [ngSwitch]="drill.isCompleted">
+        <mat-icon *ngSwitchCase="false">cancel</mat-icon>
+        <mat-icon *ngSwitchCase="true">done</mat-icon>
+      </mat-panel-description>
+
+    </mat-expansion-panel-header>
+
+    <p>{{drill.description}}</p>
+    <p>Seconds for exercise: {{drill.secondsForExercise}}s</p>
+    <button (click)="addDrillToCompleted(drill)" class="start-button" mat-button>Start</button>
+    <ng-template matExpansionPanelContent>
+
+      <iframe class="video-block" frameborder="0" width="560" height="315" src="https://www.youtube.com/embed/bnjed9YVCRs"></iframe>
+    </ng-template>
+  </mat-expansion-panel>
+</div>

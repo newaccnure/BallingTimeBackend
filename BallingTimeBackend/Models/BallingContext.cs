@@ -25,7 +25,7 @@ namespace BallingTimeBackend.Models
             modelBuilder.Entity<DribblingDrill>().ToTable("Dribbling drills");
 
             modelBuilder.Entity<UserProgress>()
-                .HasKey(t => new {t.DribblingDrillId, t.UserId });
+                .HasKey(t => new {t.DribblingDrillId, t.UserId, t.Date });
 
             modelBuilder.Entity<UserProgress>()
                 .HasOne(up => up.User)
