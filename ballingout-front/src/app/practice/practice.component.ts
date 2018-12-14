@@ -3,7 +3,9 @@ import { PracticeService } from '../services/practice.service';
 import { AuthService } from '../services/auth.service';
 import { Router } from "@angular/router";
 import { Drill } from '../models/drill.model';
-import { forEach } from '@angular/router/src/utils/collection';
+import { MatDialog } from '@angular/material';
+import { DrillResultDialogComponent } from '../drill-result-dialog/drill-result-dialog.component';
+import { CurrentDrillService } from '../services/current-drill.service';
 
 @Component({
   selector: 'app-practice',
@@ -17,7 +19,9 @@ export class PracticeComponent implements OnInit {
   constructor(
     private practiceService: PracticeService,
     private authService: AuthService,
-    private router: Router
+    private currentDrillService: CurrentDrillService,
+    private router: Router,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -34,11 +38,17 @@ export class PracticeComponent implements OnInit {
     this.practiceService.getDrills().subscribe(data => this.drills = data);
   }
 
-  addDrillToCompleted(drill: Drill): void {
-    var isCompleted = false;
-    this.practiceService.addDrillToCompleted(drill.drillId).subscribe(data =>{
-      drill.isCompleted = data;
+  viewDrillResult(drill: Drill) {
+    this.dialog.open(DrillResultDialogComponent, {
+      width: '350px',
+      height: '400px',
+      data: drill
     });
-
   }
+
+  startDrillPractice(drill: Drill) {
+    this.currentDrillService.changeDrill(drill);
+    this.router.navigate(['/drill-practice']);
+  }
+
 }

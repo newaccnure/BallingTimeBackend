@@ -93,7 +93,8 @@ namespace BallingTimeBackend.Repositories
                    {
                        AverageSpeed = x.Average(y => y.AverageSpeed),
                        AverageRepsPerSec = x.Average(y => y.RepeationsPerSecond),
-                       AverageAccuracy = x.Average(y => y.Accuracy)
+                       AverageAccuracy = x.Average(y => y.Accuracy),
+                       PracticeDay = x.Key.Date
                    })
                    .ToList();
 
@@ -186,6 +187,29 @@ namespace BallingTimeBackend.Repositories
             throw new NotImplementedException();
         }
 
+        public DrillStats GetDrillStatsById(int userId, int drillId)
+        {
+            if (_context.Users.Where(user => user.Id == userId).Count() == 0 ||
+                _context.DribblingDrills.Where(drill => drill.Id == drillId).Count() == 0)
+            {
+                return new DrillStats();
+            }
+
+            var drillProgress =
+                _context
+                .UserProgresses
+                .Where(up => up.UserId == userId
+                            && up.DribblingDrillId == drillId
+                            && up.Date == DateTime.Today)
+                .First();
+
+            return new DrillStats() {
+                Accuracy = drillProgress.Accuracy,
+                AverageSpeed = drillProgress.AverageSpeed,
+                RepsPerSec = drillProgress.RepeationsPerSecond
+            };
+        }
+
         //private bool IsPracticeFinished(int userId)
         //{
 
@@ -194,17 +218,12 @@ namespace BallingTimeBackend.Repositories
         //        .Where(u => u.Id == userId)
         //        .First();
 
-        //    DateTime lastPracticeDate =
-        //        _context
-        //        .UserProgresses
-        //        .Where(up => up.UserId == userId)
-        //        .Select(userProgress => userProgress.Date)
-        //        .Max();
+        //    DateTime today = DateTime.Now;
 
-        //    int numberOfDrillsInlastPractice =
+        //    int numberOfDrillsInTodayPractice =
         //        _context
         //        .UserProgresses
-        //        .Where(up => up.UserId == userId && up.Date.Equals(lastPracticeDate))
+        //        .Where(up => up.UserId == userId && up.Date.Equals(today))
         //        .Select(up => up.DribblingDrillId)
         //        .Count();
 

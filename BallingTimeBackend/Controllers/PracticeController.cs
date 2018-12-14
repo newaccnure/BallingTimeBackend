@@ -47,5 +47,12 @@ namespace BallingTimeBackend.Controllers
             return Json(_practiceRepository.AddDrillToCompleted(
                 userId, drillId, averageSpeed, averageAccuracy, repeatitionsPerSecond));
         }
+
+        [HttpPost]
+        [Route("getDrillStatsById")]
+        public JsonResult GetDrillStatsById(int userId, int drillId)
+        {
+            return Json(_practiceRepository.GetDrillStatsById(userId, drillId));
+        }
     }
 }

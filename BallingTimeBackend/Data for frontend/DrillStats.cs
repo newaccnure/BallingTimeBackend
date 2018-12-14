@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace BallingTimeBackend.Data_for_frontend
 {
-    public class UserStats
+    public class DrillStats
     {
         public double AverageSpeed { get; set; }
-        public double AverageRepsPerSec { get; set; }
-        public double AverageAccuracy { get; set; }
-        public DateTime PracticeDay { get; set; }
+        public double RepsPerSec { get; set; }
+        public double Accuracy { get; set; }
     }
 }

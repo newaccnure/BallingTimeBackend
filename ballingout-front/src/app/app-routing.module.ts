@@ -6,6 +6,7 @@ import { LogInMenuComponent} from './log-in-menu/log-in-menu.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { ProfileComponent } from './profile/profile.component';
 import { PracticeComponent } from './practice/practice.component';
+import { DrillPracticeCountdownComponent } from './drill-practice-countdown/drill-practice-countdown.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -13,7 +14,8 @@ const routes: Routes = [
   { path: 'login', component: LogInMenuComponent },
   { path: 'sign-up', component: SignUpComponent },
   { path: 'profile', component: ProfileComponent},
-  { path: 'practice', component: PracticeComponent}
+  { path: 'practice', component: PracticeComponent},
+  { path: 'drill-practice', component: DrillPracticeCountdownComponent}
 ];
 
 @NgModule({

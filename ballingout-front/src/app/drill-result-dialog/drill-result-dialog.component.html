@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Result for {{drillName | lowercase}}</h1>
+<div mat-dialog-content>
+  <mat-list>
+    <mat-list-item> Average speed: {{drillStats?.averageSpeed}} </mat-list-item>
+    <mat-list-item> Repeatitions per second: {{drillStats?.repsPerSec}}</mat-list-item>
+    <mat-list-item> Your grade: {{drillStats?.accuracy * 10}}</mat-list-item>
+    <mat-list-item> Tip for you: {{this.currentTip}}</mat-list-item>
+
+  </mat-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onOkClick()" cdkFocusInitial>Ok</button>
+</div>

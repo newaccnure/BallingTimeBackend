@@ -21,7 +21,16 @@
 
     <p>{{drill.description}}</p>
     <p>Seconds for exercise: {{drill.secondsForExercise}}s</p>
-    <button (click)="addDrillToCompleted(drill)" class="start-button" mat-button>Start</button>
+    <mat-panel-description [ngSwitch]="drill.isCompleted">
+      <button (click)="startDrillPractice(drill)" *ngSwitchCase="false" class="start-button" mat-button> 
+        Start
+      </button>
+      <button (click)="viewDrillResult(drill)" *ngSwitchCase="true" class="start-button" mat-button> 
+        View result
+      </button>
+
+    </mat-panel-description>
+
     <ng-template matExpansionPanelContent>
 
       <iframe class="video-block" frameborder="0" width="560" height="315" src="https://www.youtube.com/embed/bnjed9YVCRs"></iframe>
