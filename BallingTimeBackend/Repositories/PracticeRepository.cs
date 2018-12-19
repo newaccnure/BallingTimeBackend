@@ -86,7 +86,7 @@ namespace BallingTimeBackend.Repositories
             List<UserStats> allPracticeDrillsStats =
                    _context
                    .UserProgresses
-                   .Where(x => x.UserId == userId)
+                   .Where(x => x.UserId == userId && x.IsCompleted)
                    .GroupBy(up => up.Date)
                    .OrderBy(x => x.Key.Date)
                    .Select(x => new UserStats()

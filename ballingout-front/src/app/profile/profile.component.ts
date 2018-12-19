@@ -5,8 +5,8 @@ import { ProfileInfoService } from '../services/profile-info.service';
 import { Router } from "@angular/router";
 import * as Highcharts from 'highcharts';
 import { UserStats } from '../models/user-stats.model';
-import { map } from 'rxjs/operators';
-import { type } from 'os';
+
+
 
 @Component({
   selector: 'app-profile',
