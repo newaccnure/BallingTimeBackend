@@ -69,16 +69,8 @@ namespace BallingTimeBackend.Repositories
         {
             if (!_context.Users.Where(u => u.Email == email).Any())
                 return false;
-            else if (_context.Users.Where(u => u.Email == email).First().Password != password)
-                return false;
 
-            int userId = GetUserIdByEmail(email);
-
-            if (CheckDayOfPractice(userId)) {
-                MakeTrainingProgramForToday(userId);
-            }
-
-            return true;
+            return (_context.Users.Where(u => u.Email == email).First().Password == password);
         }
 
         public bool DeleteAccount(string email)
@@ -112,31 +104,6 @@ namespace BallingTimeBackend.Repositories
             return _context.Users.Where(user => user.Email == email).First().Id;
         }
 
-        private void MakeTrainingProgramForToday(int userId) {
-            CheckUserLevel(userId);
-            User user = GetUser(userId);
-
-            if (_context
-                .UserProgresses
-                .Where(up => up.UserId == userId && up.Date == DateTime.Today)
-                .Count() > 0)
-                return;
-
-            var dribblingDrills = 
-                _context
-                .TrainingPrograms
-                .Where(tp => tp.DifficultyId == user.DifficultyId);
-
-            foreach (var dribblingDrill in dribblingDrills) {
-                _context.UserProgresses.Add(new UserProgress() {
-                    IsCompleted = false,
-                    Date = DateTime.Today,
-                    DribblingDrillId = dribblingDrill.DribblingDrillId,
-                    UserId = userId
-                });
-            }
-            _context.SaveChanges();
-        }
         private void CheckUserLevel(int userId)
         {
             List<int> allDifficultyLevels =
@@ -190,12 +157,14 @@ namespace BallingTimeBackend.Repositories
             //    user.DifficultyId = _context.Difficulties.Where(dif=>dif.DifficultyLevel = allDifficultyLevels[allDifficultyLevels.IndexOf(user.)])
             //}
         }
+
         private Difficulty GetUserDifficulty(User user) {
             return _context.Difficulties.Where(dif => dif.Id == user.DifficultyId).First();
         }
         private User GetUser(int userId) {
             return _context.Users.Where(u => u.Id == userId).First();
         }
+
         private bool CheckDayOfPractice(int userId) {
             if (_context.Users.Where(u => u.Id == userId).Count() == 0)
             {

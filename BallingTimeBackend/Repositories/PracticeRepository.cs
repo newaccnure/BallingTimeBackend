@@ -19,18 +19,15 @@ namespace BallingTimeBackend.Repositories
         }
         public List<Drill_Info> GetFullTrainingProgramById(int userId)
         {
-            if (_context
-                .UserProgresses
-                .Where(up => up.UserId == userId && up.Date == DateTime.Today)
-                .Count() == 0)
-            {
+            if (!CheckDayOfPractice(userId))
                 return new List<Drill_Info>();
-            }
+
+            MakeTrainingProgramForToday(userId);
+
             var user = _context.Users.Where(u => u.Id == userId).First();
             var userDifficulty = _context.Difficulties.Where(dif => dif.Id == user.DifficultyId).First();
 
-            if (!CheckDayOfPractice(userId))
-                return new List<Drill_Info>();
+            
 
             return _context
                 .UserProgresses
@@ -57,7 +54,38 @@ namespace BallingTimeBackend.Repositories
 
                 }).ToList();
         }
+        private void MakeTrainingProgramForToday(int userId)
+        {
+            CheckUserLevel(userId);
+            User user = GetUser(userId);
 
+            if (_context
+                .UserProgresses
+                .Where(up => up.UserId == userId && up.Date == DateTime.Today)
+                .Count() > 0)
+                return;
+
+            var dribblingDrills =
+                _context
+                .TrainingPrograms
+                .Where(tp => tp.DifficultyId == user.DifficultyId);
+
+            foreach (var dribblingDrill in dribblingDrills)
+            {
+                _context.UserProgresses.Add(new UserProgress()
+                {
+                    IsCompleted = false,
+                    Date = DateTime.Today,
+                    DribblingDrillId = dribblingDrill.DribblingDrillId,
+                    UserId = userId
+                });
+            }
+            _context.SaveChanges();
+        }
+        private User GetUser(int userId)
+        {
+            return _context.Users.Where(u => u.Id == userId).First();
+        }
         public bool CheckDayOfPractice(int userId)
         {
 
