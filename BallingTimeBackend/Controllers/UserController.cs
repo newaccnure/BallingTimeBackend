@@ -59,12 +59,21 @@ namespace BallingTimeBackend.Controllers
         {
             return Json(_userRepository.GetUserById(userId));
         }
+
         [HttpPost]
         [Route("getUserIdByEmail")]
         public JsonResult GetUserIdByEmail(string email)
         {
             return Json(_userRepository.GetUserIdByEmail(email));
         }
+
+        [HttpPost]
+        [Route("getUserByEmail")]
+        public JsonResult GetUserByEmail(string email)
+        {
+            return Json(_userRepository.GetUserByEmail(email));
+        }
+
         [HttpGet]
         [Route("getAllUsers")]
         public JsonResult GetAllUsers() {

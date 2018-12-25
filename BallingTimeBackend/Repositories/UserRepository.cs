@@ -1,10 +1,10 @@
-﻿using System;
+﻿using BallingTimeBackend.Data_for_frontend;
+using BallingTimeBackend.Interfaces;
+using BallingTimeBackend.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BallingTimeBackend.Models;
-using BallingTimeBackend.Interfaces;
-using Newtonsoft.Json;
-using BallingTimeBackend.Data_for_frontend;
 
 namespace BallingTimeBackend.Repositories
 {
@@ -17,7 +17,7 @@ namespace BallingTimeBackend.Repositories
             _context = context;
         }
 
-        public bool AddUser(string name, string email, string password, 
+        public bool AddUser(string name, string email, string password,
             string checkPassword, List<int> practiceDays)
         {
             if (_context.Users.Where(u => u.Email == email).Any())
@@ -75,16 +75,19 @@ namespace BallingTimeBackend.Repositories
         {
             if (!_context.Users.Where(u => u.Email == email).Any())
                 return false;
-            else
-            {
-                _context.Users.Remove(_context.Users.Where(u => u.Email == email).First());
-                _context.SaveChanges();
-                return true;
-            }
+
+            _context.Users.Remove(_context.Users.Where(u => u.Email == email).First());
+            _context.SaveChanges();
+            return true;
         }
 
-        public User_shortened_model GetUserById(int userId) {
-            return _context.Users.Where(user => user.Id == userId).Select(x => new User_shortened_model() {
+        public User_shortened_model GetUserById(int userId)
+        {
+            if (!_context.Users.Where(user => user.Id == userId).Any())
+                return new User_shortened_model();
+
+            return _context.Users.Where(user => user.Id == userId).Select(x => new User_shortened_model()
+            {
                 Id = x.Id,
                 Email = x.Email,
                 Name = x.Name,
@@ -92,14 +95,32 @@ namespace BallingTimeBackend.Repositories
                 PracticeDays = JsonConvert.DeserializeObject<List<int>>(x.PracticeDays)
             }).First();
         }
-        
-        public List<User> GetAllUsers() {
+
+        public List<User> GetAllUsers()
+        {
             return _context.Users.ToList();
         }
 
         public int GetUserIdByEmail(string email)
         {
+            if (!_context.Users.Where(user => user.Email == email).Any())
+                return 0;
             return _context.Users.Where(user => user.Email == email).First().Id;
+        }
+
+        public User_shortened_model GetUserByEmail(string email)
+        {
+            if (!_context.Users.Where(user => user.Email == email).Any())
+                return new User_shortened_model();
+
+            return _context.Users.Where(user => user.Email == email).Select(x => new User_shortened_model()
+            {
+                Id = x.Id,
+                Email = x.Email,
+                Name = x.Name,
+                Password = x.Password,
+                PracticeDays = JsonConvert.DeserializeObject<List<int>>(x.PracticeDays)
+            }).First();
         }
 
         private void CheckUserLevel(int userId)
@@ -116,7 +137,7 @@ namespace BallingTimeBackend.Repositories
 
             var userDifficulty = GetUserDifficulty(user);
 
-            if (userDifficulty.DifficultyLevel == allDifficultyLevels.Max()) 
+            if (userDifficulty.DifficultyLevel == allDifficultyLevels.Max())
                 return;
 
             if (user.UserProgresses.Count == 0)
@@ -156,14 +177,18 @@ namespace BallingTimeBackend.Repositories
             //}
         }
 
-        private Difficulty GetUserDifficulty(User user) {
+        private Difficulty GetUserDifficulty(User user)
+        {
             return _context.Difficulties.Where(dif => dif.Id == user.DifficultyId).First();
         }
-        private User GetUser(int userId) {
+
+        private User GetUser(int userId)
+        {
             return _context.Users.Where(u => u.Id == userId).First();
         }
 
-        private bool CheckDayOfPractice(int userId) {
+        private bool CheckDayOfPractice(int userId)
+        {
             if (_context.Users.Where(u => u.Id == userId).Count() == 0)
             {
                 return false;

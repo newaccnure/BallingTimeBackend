@@ -14,6 +14,7 @@ namespace BallingTimeBackend.Interfaces
         bool DeleteAccount(string email);
         User_shortened_model GetUserById(int userId);
         int GetUserIdByEmail(string email);
+        User_shortened_model GetUserByEmail(string email);
         List<User> GetAllUsers();
     }
 }
