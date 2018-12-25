@@ -24,6 +24,8 @@ namespace BallingTimeBackend.Repositories
                 return false;
             else if (password != checkPassword)
                 return false;
+            else if (String.IsNullOrWhiteSpace(name))
+                return false;
             else if (practiceDays.Count() < 2)
                 return false;
 
