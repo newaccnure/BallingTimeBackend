@@ -136,10 +136,10 @@ namespace BallingTimeBackend.Models
 
                 context.SaveChanges();
             }
-
+            //CheckUserLevelTest(context);
         }
 
-        static List<string> GetDrillNames(HtmlDocument doc)
+        private static List<string> GetDrillNames(HtmlDocument doc)
         {
             var drillNames = doc.DocumentNode
                 .Descendants("strong");
@@ -157,7 +157,7 @@ namespace BallingTimeBackend.Models
             return drillNamesList;
         }
 
-        static List<string> GetDrillDescriptions(HtmlDocument doc)
+        private static List<string> GetDrillDescriptions(HtmlDocument doc)
         {
             var drillDescriptions = doc.DocumentNode
                 .Descendants("p");
@@ -184,6 +184,59 @@ namespace BallingTimeBackend.Models
             }
 
             return drillDescriptionsList;
+        }
+
+        private static void CheckUserLevelTest(BallingContext context) {
+            context.Users.Add(new User()
+            {
+                DifficultyId = context.Difficulties.Where(dif => dif.DifficultyLevel == 1).First().Id,
+                Email = "ben@yandex.ru",
+                Name = "Ben",
+                Password = "ben",
+                PracticeDays = JsonConvert.SerializeObject(new List<int>() { 0, 1, 2, 3, 4, 5, 6 })
+            });
+            context.SaveChanges();
+            User ben = context.Users.Where(user => user.Email == "ben@yandex.ru").First();
+            List<int> drillIds =
+                    context
+                    .TrainingPrograms
+                    .Where(tp => tp.DifficultyId == ben.DifficultyId)
+                    .Select(x => x.DribblingDrillId)
+                    .ToList();
+
+            for (int i = 0; i < drillIds.Count; ++i)
+            {
+                context.UserProgresses.Add(new UserProgress()
+                {
+                    Accuracy = 0.5,
+
+                    AverageSpeed = 0.5,
+
+                    RepeationsPerSecond = 0.5,
+
+                    Date = DateTime.Now.AddDays(-5),
+                    DribblingDrillId = drillIds[i],
+                    IsCompleted = true,
+                    UserId = ben.Id
+                });
+            }
+            for (int i = 0; i < drillIds.Count; ++i)
+            {
+                context.UserProgresses.Add(new UserProgress()
+                {
+                    Accuracy = 1,
+
+                    AverageSpeed = 1,
+
+                    RepeationsPerSecond = 1,
+
+                    Date = DateTime.Now.AddDays(-3),
+                    DribblingDrillId = drillIds[i],
+                    IsCompleted = true,
+                    UserId = ben.Id
+                });
+            }
+            context.SaveChanges();
         }
     }
 }

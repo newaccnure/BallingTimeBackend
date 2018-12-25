@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using BallingTimeBackend.Interfaces;
 using BallingTimeBackend.Models;
-using BallingTimeBackend.Data_for_frontend;
-using Newtonsoft.Json;
 
 namespace BallingTimeBackend.Repositories
 {

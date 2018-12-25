@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using BallingTimeBackend.Interfaces;
 using BallingTimeBackend.Models;
 using BallingTimeBackend.Data_for_frontend;
@@ -17,6 +16,7 @@ namespace BallingTimeBackend.Repositories
         {
             _context = context;
         }
+
         public List<Drill_Info> GetFullTrainingProgramById(int userId)
         {
             if (!CheckDayOfPractice(userId))
@@ -24,10 +24,8 @@ namespace BallingTimeBackend.Repositories
 
             MakeTrainingProgramForToday(userId);
 
-            var user = _context.Users.Where(u => u.Id == userId).First();
-            var userDifficulty = _context.Difficulties.Where(dif => dif.Id == user.DifficultyId).First();
-
-            
+            var user = GetUser(userId);
+            var userDifficulty = _context.Difficulties.Where(dif => dif.Id == user.DifficultyId).First(); 
 
             return _context
                 .UserProgresses
@@ -54,38 +52,7 @@ namespace BallingTimeBackend.Repositories
 
                 }).ToList();
         }
-        private void MakeTrainingProgramForToday(int userId)
-        {
-            CheckUserLevel(userId);
-            User user = GetUser(userId);
 
-            if (_context
-                .UserProgresses
-                .Where(up => up.UserId == userId && up.Date == DateTime.Today)
-                .Count() > 0)
-                return;
-
-            var dribblingDrills =
-                _context
-                .TrainingPrograms
-                .Where(tp => tp.DifficultyId == user.DifficultyId);
-
-            foreach (var dribblingDrill in dribblingDrills)
-            {
-                _context.UserProgresses.Add(new UserProgress()
-                {
-                    IsCompleted = false,
-                    Date = DateTime.Today,
-                    DribblingDrillId = dribblingDrill.DribblingDrillId,
-                    UserId = userId
-                });
-            }
-            _context.SaveChanges();
-        }
-        private User GetUser(int userId)
-        {
-            return _context.Users.Where(u => u.Id == userId).First();
-        }
         public bool CheckDayOfPractice(int userId)
         {
 
@@ -155,66 +122,6 @@ namespace BallingTimeBackend.Repositories
             return true;
         }
 
-        private void CheckUserLevel(int userId)
-        {
-            List<int> allDifficultyLevels =
-                _context
-                .Difficulties
-                .Select(x => x.DifficultyLevel)
-                .ToList();
-
-            allDifficultyLevels.Sort();
-
-            User user =
-                _context
-                .Users
-                .Where(u => u.Id == userId)
-                .First();
-
-            if (user.Difficulty.DifficultyLevel == allDifficultyLevels.Max()) return;
-
-            DateTime lastPracticeDate =
-                _context
-                .UserProgresses
-                .Where(up => up.UserId == userId)
-                .Select(userProgress => userProgress.Date)
-                .Max();
-
-            List<UserProgress> lastPracticeDrills =
-                _context
-                .UserProgresses
-                .Where(up => up.UserId == userId && up.Date.Equals(lastPracticeDate))
-                .ToList();
-
-            List<double> lastPracticeAccuracy =
-                lastPracticeDrills
-                .Select(x => x.Accuracy)
-                .ToList();
-
-            List<double> lastPracticeRepsPerSec =
-                lastPracticeDrills
-                .Select(x => x.RepeationsPerSecond)
-                .ToList();
-
-            List<double> userOverallAverageRepPerSecAcrossAllDrills =
-                _context
-                .UserProgresses
-                .Where(up => up.UserId == userId)
-                .GroupBy(up => new { up.UserId, up.DribblingDrillId })
-                .Select(x => x.Average(y => y.RepeationsPerSecond))
-                .ToList();
-
-            List<double> userOverallAverageAccuracyAcrossAllDrills =
-                _context
-                .UserProgresses
-                .Where(up => up.UserId == userId)
-                .GroupBy(up => new { up.UserId, up.DribblingDrillId })
-                .Select(x => x.Average(y => y.Accuracy))
-                .ToList();
-
-            throw new NotImplementedException();
-        }
-
         public DrillStats GetDrillStatsById(int userId, int drillId)
         {
             if (_context.Users.Where(user => user.Id == userId).Count() == 0 ||
@@ -238,30 +145,115 @@ namespace BallingTimeBackend.Repositories
             };
         }
 
-        //private bool IsPracticeFinished(int userId)
-        //{
+        private User GetUser(int userId)
+        {
+            return _context.Users.Where(u => u.Id == userId).First();
+        }
 
-        //    var user = _context
-        //        .Users
-        //        .Where(u => u.Id == userId)
-        //        .First();
+        private void CheckUserLevel(int userId)
+        {
+            var difficulties = _context.Difficulties;
+            var userProgresses = _context.UserProgresses;
 
-        //    DateTime today = DateTime.Now;
+            List<int> allDifficultyLevels =
+                difficulties
+                .Select(x => x.DifficultyLevel)
+                .ToList();
 
-        //    int numberOfDrillsInTodayPractice =
-        //        _context
-        //        .UserProgresses
-        //        .Where(up => up.UserId == userId && up.Date.Equals(today))
-        //        .Select(up => up.DribblingDrillId)
-        //        .Count();
 
-        //    int numberOfDrillsInPractice =
-        //        _context
-        //        .TrainingPrograms
-        //        .Where(x => x.Difficulty == user.Difficulty)
-        //        .Count();
+            User user =
+                _context
+                .Users
+                .Where(u => u.Id == userId)
+                .First();
 
-        //    throw new NotImplementedException();
-        //}
+            Difficulty userDifficulty =
+                difficulties
+                .Where(x => x.Id == user.DifficultyId)
+                .First();
+
+            if (userDifficulty.DifficultyLevel == allDifficultyLevels.Max()) return;
+
+            DateTime lastPracticeDate =
+                userProgresses
+                .Where(up => up.UserId == userId)
+                .Select(userProgress => userProgress.Date)
+                .Max();
+
+            List<UserProgress> lastPracticeDrills =
+                userProgresses
+                .Where(up => up.UserId == userId && up.Date.Equals(lastPracticeDate))
+                .ToList();
+
+            double lastPracticeAccuracy =
+                lastPracticeDrills
+                .Select(x => x.Accuracy)
+                .ToList()
+                .Average();
+
+            double lastPracticeRepsPerSec =
+                lastPracticeDrills
+                .Select(x => x.RepeationsPerSecond)
+                .ToList()
+                .Average();
+
+            double userOverallAverageRepPerSecAcrossAllDrills =
+                userProgresses
+                .Where(up => up.UserId == userId)
+                .GroupBy(up => new { up.UserId, up.DribblingDrillId })
+                .Select(x => x.Average(y => y.RepeationsPerSecond))
+                .ToList()
+                .Average();
+
+            double userOverallAverageAccuracyAcrossAllDrills =
+                userProgresses
+                .Where(up => up.UserId == userId)
+                .GroupBy(up => new { up.UserId, up.DribblingDrillId })
+                .Select(x => x.Average(y => y.Accuracy))
+                .ToList()
+                .Average();
+
+            if (lastPracticeAccuracy > userOverallAverageAccuracyAcrossAllDrills
+                && lastPracticeRepsPerSec > userOverallAverageRepPerSecAcrossAllDrills)
+            {
+                allDifficultyLevels.Sort();
+                var index = allDifficultyLevels
+                    .FindIndex(0, allDifficultyLevels.Count, x => x == userDifficulty.DifficultyLevel);
+                Difficulty newDifficulty = difficulties
+                    .Where(x => x.DifficultyLevel == allDifficultyLevels[index + 1]).First();
+                user.Difficulty = newDifficulty;
+                _context.SaveChanges();
+            }
+
+        }
+
+        private void MakeTrainingProgramForToday(int userId)
+        {
+            CheckUserLevel(userId);
+            User user = GetUser(userId);
+
+            if (_context
+                .UserProgresses
+                .Where(up => up.UserId == userId && up.Date == DateTime.Today)
+                .Count() > 0)
+                return;
+
+            var dribblingDrills =
+                _context
+                .TrainingPrograms
+                .Where(tp => tp.DifficultyId == user.DifficultyId);
+
+            foreach (var dribblingDrill in dribblingDrills)
+            {
+                _context.UserProgresses.Add(new UserProgress()
+                {
+                    IsCompleted = false,
+                    Date = DateTime.Today,
+                    DribblingDrillId = dribblingDrill.DribblingDrillId,
+                    UserId = userId
+                });
+            }
+            _context.SaveChanges();
+        }
     }
 }
