@@ -1,8 +1,8 @@
 <div *ngIf="unAuthorized()">
   <button routerLink="/login" mat-button class="font header-menu-button">
-    Log in
+    {{ 'Log in' | translate:lang}}
   </button>
   <button routerLink="/sign-up" mat-button class="font header-menu-button">
-    Sign up
+    {{ 'Sign up' | translate:lang}}
   </button>
 </div>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import { Language, TranslationService, LocaleService } from 'angular-l10n';
 
 @Component({
   selector: 'app-auth-menu',
@@ -8,8 +9,12 @@ import { AuthService } from '../services/auth.service';
 })
 
 export class AuthMenuComponent implements OnInit {
-
-  constructor(private authService: AuthService) { }
+  @Language() lang: string;
+  
+  constructor(
+    private authService: AuthService,
+    public locale: LocaleService, 
+    public translation: TranslationService) { }
 
   ngOnInit() {
 

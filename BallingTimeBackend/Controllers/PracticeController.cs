@@ -49,5 +49,11 @@ namespace BallingTimeBackend.Controllers
         {
             return Json(_practiceRepository.GetDrillStatsById(userId, drillId));
         }
+
+        [HttpPost]
+        [Route("practiceWasStarted")]
+        public JsonResult PracticeWasStarted(int userId) {
+            return Json(_practiceRepository.PracticeWasStarted(userId));
+        }
     }
 }

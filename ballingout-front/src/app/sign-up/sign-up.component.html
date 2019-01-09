@@ -6,35 +6,35 @@
   </div>
   <div class="example-container">
 
-    <mat-label>Email:</mat-label>
+    <mat-label l10nTranslate>Email:</mat-label>
     <mat-form-field>
       <input matInput [(ngModel)]="user.Email">
     </mat-form-field>
 
-    <mat-label>Your name:</mat-label>
+    <mat-label l10nTranslate>Your name:</mat-label>
     <mat-form-field>
       <input matInput [(ngModel)]="user.Name">
     </mat-form-field>
 
-    <mat-label>Password:</mat-label>
+    <mat-label l10nTranslate>Password:</mat-label>
     <mat-form-field>
       <input type="password" matInput [(ngModel)]="user.Password">
     </mat-form-field>
 
-    <mat-label>Confirm password:</mat-label>
+    <mat-label l10nTranslate>Confirm password:</mat-label>
     <mat-form-field>
       <input type="password" matInput [(ngModel)]="confirmPassword">
     </mat-form-field>
 
     <div class="selection-list-practice-days">
       <mat-form-field>
-        <mat-select placeholder="Practice days" [(ngModel)]="this.array" multiple>
-          <mat-option *ngFor="let day of daysOfWeek" [value]="day">{{day}}</mat-option>
+        <mat-select placeholder="{{'Practice days' | translate:lang}}" [(ngModel)]="this.array" multiple>
+          <mat-option l10nTranslate *ngFor="let day of daysOfWeek" [value]="day">{{day}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
-    <button mat-raised-button class="log-in-confirm-button" (click)="signUp()">
+    <button l10nTranslate mat-raised-button class="log-in-confirm-button" (click)="signUp()">
       Sign up
     </button>
 

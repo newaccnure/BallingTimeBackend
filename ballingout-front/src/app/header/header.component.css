@@ -18,3 +18,7 @@
 a {
     color: #000;
 }
+.locale-button{
+    height: 2em;
+    background-color: #5ab8eb;
+}

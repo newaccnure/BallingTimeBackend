@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslationService, LocaleService, Language } from 'angular-l10n';
 
 @Component({
   selector: 'app-header',
@@ -6,10 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-
-  constructor() { }
+  
+  constructor(
+    public locale: LocaleService, 
+    public translation: TranslationService) { }
 
   ngOnInit() {
   }
-
+  
+  onValChange(value:string){
+    localStorage.setItem('locale', value);
+    this.locale.setCurrentLanguage(value);
+  }
 }

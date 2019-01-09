@@ -6,6 +6,7 @@ import { Drill } from '../models/drill.model';
 import { MatDialog } from '@angular/material';
 import { DrillResultDialogComponent } from '../drill-result-dialog/drill-result-dialog.component';
 import { CurrentDrillService } from '../services/current-drill.service';
+import { TranslationService, LocaleService } from 'angular-l10n';
 
 @Component({
   selector: 'app-practice',
@@ -21,7 +22,9 @@ export class PracticeComponent implements OnInit {
     private authService: AuthService,
     private currentDrillService: CurrentDrillService,
     private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public locale: LocaleService, 
+    public translation: TranslationService
   ) { }
 
   ngOnInit() {

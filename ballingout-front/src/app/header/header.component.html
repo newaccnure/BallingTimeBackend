@@ -4,10 +4,18 @@
     <app-auth-menu></app-auth-menu>
     <app-log-out></app-log-out>
     <a routerLink="/home">
-      <button mat-button color="blue" class="font font-size header-menu-button about-us">
+      <button l10nTranslate mat-button color="blue" class="font font-size header-menu-button about-us">
         About us
       </button>
     </a>
+    <mat-button-toggle-group  (change)="onValChange(group.value)"  #group="matButtonToggleGroup">
+      <mat-button-toggle class="locale-button" value="en">
+        En
+      </mat-button-toggle>
+      <mat-button-toggle class="locale-button" value="ua">
+        Ua
+      </mat-button-toggle>
+    </mat-button-toggle-group>
 
   </div>
 </div>

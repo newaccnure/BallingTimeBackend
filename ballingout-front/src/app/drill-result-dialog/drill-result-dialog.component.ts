@@ -1,26 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Drill } from '../models/drill.model';
 import { DrillStats } from '../models/drill-stats.model';
 import { TIPS } from '../constants/tips.model';
 import { PracticeService } from '../services/practice.service';
+import { TranslationService, LocaleService, Language } from 'angular-l10n';
 
 @Component({
   selector: 'app-drill-result-dialog',
   templateUrl: './drill-result-dialog.component.html',
   styleUrls: ['./drill-result-dialog.component.css']
 })
-export class DrillResultDialogComponent implements OnInit {
+export class DrillResultDialogComponent implements OnInit, OnDestroy {
   tips = TIPS;
   currentTip: string;
   drillStats: DrillStats;
   drillName: string;
+  @Language() lang: string;
 
   constructor(
     public dialogRef: MatDialogRef<DrillResultDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public drill: Drill,
-    private practiceService: PracticeService) { }
+    private practiceService: PracticeService,
+    public locale: LocaleService, 
+    public translation: TranslationService) { }
 
   ngOnInit() {
     this.drillName = this.drill.name;
@@ -32,6 +36,9 @@ export class DrillResultDialogComponent implements OnInit {
       this.currentTip = TIPS[randomIndex];
     });
 
+  }
+  ngOnDestroy(){
+        
   }
 
   onOkClick(): void {

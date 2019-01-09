@@ -11,5 +11,6 @@ namespace BallingTimeBackend.Interfaces
         bool AddDrillToCompleted(int userId, int drillId, 
             double averageSpeed, double averageAccuracy, double repeatitionsPerSecond);
         DrillStats GetDrillStatsById(int userId, int drillId);
+        bool PracticeWasStarted(int userId);
     }
 }

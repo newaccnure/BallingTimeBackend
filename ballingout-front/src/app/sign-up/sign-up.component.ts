@@ -6,6 +6,7 @@ import { MatListOption } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { Router } from "@angular/router";
 import { MatSnackBar } from '@angular/material';
+import { Language } from 'angular-l10n';
 
 @Component({
   selector: 'app-sign-up',
@@ -23,7 +24,8 @@ export class SignUpComponent implements OnInit {
   user: User;
   confirmPassword: string;
   array: any;
-
+  @Language() lang: string;
+  
   constructor(
     private authService: AuthService,
     private router: Router,

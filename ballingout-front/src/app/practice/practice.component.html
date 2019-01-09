@@ -7,8 +7,7 @@
   <mat-expansion-panel>
     <mat-expansion-panel-header>
 
-      <mat-panel-title>
-        {{drill.drillId}}
+      <mat-panel-title l10nTranslate>
         {{drill.name}}
       </mat-panel-title>
 
@@ -19,13 +18,13 @@
 
     </mat-expansion-panel-header>
 
-    <p>{{drill.description}}</p>
-    <p>Seconds for exercise: {{drill.secondsForExercise}}s</p>
+    <p l10nTranslate>{{drill.description}}</p>
+    <p l10nTranslate>Seconds for exercise: {{drill.secondsForExercise}}s</p>
     <mat-panel-description [ngSwitch]="drill.isCompleted">
-      <button (click)="startDrillPractice(drill)" *ngSwitchCase="false" class="start-button" mat-button> 
+      <button l10nTranslate (click)="startDrillPractice(drill)" *ngSwitchCase="false" class="start-button" mat-button> 
         Start
       </button>
-      <button (click)="viewDrillResult(drill)" *ngSwitchCase="true" class="start-button" mat-button> 
+      <button l10nTranslate (click)="viewDrillResult(drill)" *ngSwitchCase="true" class="start-button" mat-button> 
         View result
       </button>
 

@@ -5,6 +5,7 @@ import { ProfileInfoService } from '../services/profile-info.service';
 import { Router } from "@angular/router";
 import * as Highcharts from 'highcharts';
 import { UserStats } from '../models/user-stats.model';
+import { TranslationService, LocaleService } from 'angular-l10n';
 
 
 
@@ -125,7 +126,9 @@ export class ProfileComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private profileInfoService: ProfileInfoService) {
+    private profileInfoService: ProfileInfoService,
+    public locale: LocaleService, 
+    public translation: TranslationService) {
 
   }
 

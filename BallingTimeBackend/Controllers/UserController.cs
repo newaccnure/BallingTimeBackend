@@ -79,5 +79,12 @@ namespace BallingTimeBackend.Controllers
         public JsonResult GetAllUsers() {
             return Json(_userRepository.GetAllUsers());
         }
+
+        [HttpPost]
+        [Route("addData")]
+        public JsonResult AddData(double first, double second) {
+
+            return Json(System.IO.File.ReadAllLines("file.txt"));
+        }
     }
 }

@@ -155,6 +155,9 @@ namespace BallingTimeBackend.Repositories
             var difficulties = _context.Difficulties;
             var userProgresses = _context.UserProgresses;
 
+            if (!userProgresses.Where(up => up.UserId == userId).Any())
+                return;
+
             List<int> allDifficultyLevels =
                 difficulties
                 .Select(x => x.DifficultyLevel)
@@ -254,6 +257,11 @@ namespace BallingTimeBackend.Repositories
                 });
             }
             _context.SaveChanges();
+        }
+
+        public bool PracticeWasStarted(int userId)
+        {
+            return _context.UserProgresses.Where(up => up.UserId == userId && up.Date == DateTime.Today).Any();
         }
     }
 }

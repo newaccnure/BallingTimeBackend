@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { CountdownTimerModule } from 'ngx-countdown-timer';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -18,13 +19,35 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 import { PracticeComponent } from './practice/practice.component';
 import { DrillResultDialogComponent } from './drill-result-dialog/drill-result-dialog.component';
 import { HighchartsChartComponent } from 'highcharts-angular';
+import { DrillPracticeCountdownComponent } from './drill-practice-countdown/drill-practice-countdown.component';
 
 import { AuthService } from './services/auth.service';
 import { PracticeService } from './services/practice.service';
-import { CountdownTimerModule } from 'ngx-countdown-timer';
-import { DrillPracticeCountdownComponent } from './drill-practice-countdown/drill-practice-countdown.component';
 import { CurrentDrillService } from './services/current-drill.service';
 import { ProfileInfoService } from './services/profile-info.service';
+
+import { L10nConfig, L10nLoader, LocalizationModule, StorageStrategy, ProviderType, LogLevel } from 'angular-l10n';
+
+const l10nConfig: L10nConfig = {
+  logger: {
+    level: LogLevel.Warn
+  },
+  locale: {
+    languages: [
+      { code: 'en', dir: 'ltr' },
+      { code: 'ua', dir: 'ltr' }
+    ],
+    language: 'en',
+    storage: StorageStrategy.Cookie
+  },
+  translation: {
+    providers: [
+      { type: ProviderType.Static, prefix: './assets/locale-' }
+    ],
+    caching: true,
+    missingValue: 'No key'
+  }
+};
 
 @NgModule({
   declarations: [
@@ -50,15 +73,20 @@ import { ProfileInfoService } from './services/profile-info.service';
     FormsModule,
     HttpModule,
     ReactiveFormsModule,
-    CountdownTimerModule
+    CountdownTimerModule,
+    LocalizationModule.forRoot(l10nConfig)
   ],
   providers: [
-    AuthService, 
-    PracticeService, 
+    AuthService,
+    PracticeService,
     CurrentDrillService,
     ProfileInfoService
   ],
   entryComponents: [DrillResultDialogComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(public l10nLoader: L10nLoader) {
+    this.l10nLoader.load();
+  }
+}

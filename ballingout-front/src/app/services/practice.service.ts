@@ -10,13 +10,13 @@ import { DrillStats } from '../models/drill-stats.model';
 })
 export class PracticeService {
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-  checkDayOfPractice(){
+  checkDayOfPractice() {
     //var id = 
   }
 
-  getDrills(): Observable<Array<Drill>>{
+  getDrills(): Observable<Array<Drill>> {
     if ('currentUser' in localStorage) {
       let currentUser = JSON.parse(localStorage.getItem('currentUser'));
       let requestUrl: string = environment.apiUrl + "/practice/getFullTrainingProgramById";
@@ -30,7 +30,7 @@ export class PracticeService {
     return null;
   }
 
-  addDrillToCompleted(drillId:number): Observable<boolean>{
+  addDrillToCompleted(drillId: number): Observable<boolean> {
     if ('currentUser' in localStorage) {
       let currentUser = JSON.parse(localStorage.getItem('currentUser'));
       let requestUrl: string = environment.apiUrl + "/practice/addDrillToCompleted";
@@ -39,16 +39,17 @@ export class PracticeService {
       let body = new HttpParams();
       body = body.set('userId', currentUser.userId);
       body = body.set('drillId', drillId.toString());
-      body = body.set('averageSpeed', "10,1");
-      body = body.set('averageAccuracy', "0,8");
-      body = body.set('repeatitionsPerSecond', "0,8");
+
+      body = body.set('averageSpeed', (Math.random() * 5 + 10).toFixed(2).toString());
+      body = body.set('averageAccuracy', (Math.random() * 0.5 + 0.5).toFixed(2).toString());
+      body = body.set('repeatitionsPerSecond', (Math.random() * 0.5 + 0.5).toFixed(2).toString());
 
       return this.http.post<boolean>(requestUrl, body, { headers: myheader })
     }
     return null;
   }
 
-  getDrillStatsById(drillId:number): Observable<DrillStats>{
+  getDrillStatsById(drillId: number): Observable<DrillStats> {
     if ('currentUser' in localStorage) {
       let currentUser = JSON.parse(localStorage.getItem('currentUser'));
       let requestUrl: string = environment.apiUrl + "/practice/getDrillStatsById";
