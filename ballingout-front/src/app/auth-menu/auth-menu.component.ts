@@ -9,6 +9,7 @@ import { Language, TranslationService, LocaleService } from 'angular-l10n';
 })
 
 export class AuthMenuComponent implements OnInit {
+
   @Language() lang: string;
   
   constructor(
@@ -19,7 +20,6 @@ export class AuthMenuComponent implements OnInit {
   ngOnInit() {
 
   }
-
   unAuthorized(): boolean {
     return !this.authService.isAuthorized();
   }

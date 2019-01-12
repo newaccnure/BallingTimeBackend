@@ -30,7 +30,7 @@
     stroke-width: 2px;
     stroke: rgb(28, 103, 165);
     fill: none;
-    animation: countdown 30s linear forwards;
+    animation: countdown 45s linear forwards;
   }
   
   @keyframes countdown {
@@ -40,4 +40,8 @@
     to {
       stroke-dashoffset: 1130px;
     }
+  }
+  .drill-name{
+    text-align: center;
+    font-size: 25px; 
   }

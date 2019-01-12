@@ -21,7 +21,7 @@ export class DrillPracticeCountdownComponent implements OnInit {
   ) {
     this.addDrillToCompleted = this.addDrillToCompleted.bind(this);
 
-    this.time = 30;
+    this.time = 45;
   }
 
   ngOnInit() {

@@ -30,12 +30,8 @@ namespace BallingTimeBackend.Repositories
                 SecondsForExercise = secondsForExercise,
                 DifficultyLevel = difficultyLevel
             });
+            _context.SaveChanges();
             return true;
-        }
-
-        public List<Difficulty> GetAllDifficulties()
-        {
-            return _context.Difficulties.ToList();
         }
 
         public bool AddDribblingDrill(string name, string description, string videoReference)
@@ -57,13 +53,114 @@ namespace BallingTimeBackend.Repositories
                 Description = description,
                 VideoReference = videoReference
             });
+            _context.SaveChanges();
             return true;
         }
 
-        public List<DribblingDrill> GetAllDribblingDrills()
+        public bool AddTrainingProgram(int dribblingDrillId, int difficultyId)
         {
+            if (!_context.DribblingDrills.Where(dd => dd.Id == dribblingDrillId).Any() ||
+                !_context.Difficulties.Where(d => d.Id == difficultyId).Any()) {
+                return false;
+            }
+
+            _context.TrainingPrograms.Add(new TrainingProgram()
+            {
+                DifficultyId = difficultyId,
+                DribblingDrillId = dribblingDrillId
+            });
+
+            _context.SaveChanges();
+            return true;
+        }
+
+        public List<Difficulty> GetDifficulties()
+        {
+            if (_context.Difficulties.Count() == 0)
+                return new List<Difficulty>();
+            return _context.Difficulties.ToList();
+        }
+
+        public List<Tuple<string,int>> GetTrainingPrograms()
+        {
+            if (!_context.TrainingPrograms.Any())
+                return new List<Tuple<string, int>>();
+            var dribblingDrills = _context.DribblingDrills;
+            var difficulties = _context.Difficulties;
+            return 
+                _context
+                .TrainingPrograms
+                .Select(x => new Tuple<string, int>(
+                    dribblingDrills
+                        .Where(drill => drill.Id == x.DribblingDrillId)
+                        .First()
+                        .Name,
+                    difficulties
+                        .Where(difficulty => difficulty.Id == x.DifficultyId)
+                        .First()
+                        .DifficultyLevel
+                    )
+                ).ToList();
+        }
+
+        public List<DribblingDrill> GetDribblingDrills()
+        {
+            if (_context.DribblingDrills.Count() == 0)
+                return new List<DribblingDrill>();
             return _context.DribblingDrills.ToList();
         }
 
+        public bool DeleteDribblingDrill(int drillId)
+        {
+            if (!_context.DribblingDrills.Where(d => d.Id == drillId).Any())
+                return false;
+            var drill = _context.DribblingDrills.Where(d => d.Id == drillId).First();
+            _context.DribblingDrills.Remove(drill);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteTrainingProgram(int drillId, int difficultyId)
+        {
+            if (!_context
+                .TrainingPrograms
+                .Where(d => d.DribblingDrillId == drillId
+                            && d.DifficultyId == difficultyId)
+                .Any())
+            {
+                return false;
+            }
+            var trainingProgram =
+                _context
+                .TrainingPrograms
+                .Where(d => d.DribblingDrillId == drillId
+                    && d.DifficultyId == difficultyId)
+                .First();
+
+            _context.TrainingPrograms.Remove(trainingProgram);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteDifficulty(int difficultyId)
+        {
+            if (!_context.Difficulties.Where(d => d.Id == difficultyId).Any())
+            {
+                return false;
+            }
+            var difficulty = _context.Difficulties.Where(d => d.Id == difficultyId).First();
+            _context.Difficulties.Remove(difficulty);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteUserProgress()
+        {
+            var up1 = _context.UserProgresses.Where(up => up.Date.DayOfYear.Equals(DateTime.Now.AddDays(-1).DayOfYear));
+            _context.UserProgresses.RemoveRange(up1);
+            _context.SaveChanges();
+            return true;
+        }
+        
     }
 }
