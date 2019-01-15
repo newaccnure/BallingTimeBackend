@@ -76,12 +76,5 @@ namespace BallingTimeBackend.Controllers
         {
             return Json(_contentRepository.DeleteDifficulty(difficultyId));
         }
-
-        [HttpDelete]
-        [Route("deleteUserProgress")]
-        public JsonResult DeleteUserProgress()
-        {
-            return Json(_contentRepository.DeleteUserProgress());
-        }
     }
 }

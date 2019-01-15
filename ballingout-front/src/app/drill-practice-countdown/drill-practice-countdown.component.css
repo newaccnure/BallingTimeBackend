@@ -23,7 +23,27 @@
     transform: rotateY(-180deg) rotateZ(-90deg);
   }
   
-  svg circle {
+  /* svg circle {
+    stroke-dasharray: 1130px;
+    stroke-dashoffset: 0px;
+    stroke-linecap: round;
+    stroke-width: 2px;
+    stroke: rgb(28, 103, 165);
+    fill: none;
+    animation: countdown 45s linear forwards;
+  } */
+
+  #time30{
+    stroke-dasharray: 1130px;
+    stroke-dashoffset: 0px;
+    stroke-linecap: round;
+    stroke-width: 2px;
+    stroke: rgb(28, 103, 165);
+    fill: none;
+    animation: countdown 30s linear forwards;
+  }
+ 
+  #time45{
     stroke-dasharray: 1130px;
     stroke-dashoffset: 0px;
     stroke-linecap: round;
@@ -32,7 +52,6 @@
     fill: none;
     animation: countdown 45s linear forwards;
   }
-  
   @keyframes countdown {
     from {
       stroke-dashoffset: 0px;

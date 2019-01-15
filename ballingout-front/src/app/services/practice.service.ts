@@ -16,6 +16,21 @@ export class PracticeService {
     //var id = 
   }
 
+  startDrillPractice(drill:Drill):Observable<boolean> {
+    if ('currentUser' in localStorage) {
+      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      let requestUrl: string = environment.apiUrl + "/practice/startDrillPractice";
+      const myheader = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+
+      let body = new HttpParams();
+      body = body.set('userId', currentUser.userId);
+      body = body.set('drillId', drill.drillId.toString());
+
+      return this.http.post<boolean>(requestUrl, body, { headers: myheader })
+    }
+    return null;
+  }
+
   getDrills(): Observable<Array<Drill>> {
     if ('currentUser' in localStorage) {
       let currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -24,7 +39,7 @@ export class PracticeService {
 
       let body = new HttpParams();
       body = body.set('userId', currentUser.userId);
-
+      
       return this.http.post<Array<Drill>>(requestUrl, body, { headers: myheader })
     }
     return null;

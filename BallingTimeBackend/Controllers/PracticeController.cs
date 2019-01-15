@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using BallingTimeBackend.Interfaces;
+using System.Threading.Tasks;
 
 namespace BallingTimeBackend.Controllers
 {
@@ -54,6 +55,12 @@ namespace BallingTimeBackend.Controllers
         [Route("practiceWasStarted")]
         public JsonResult PracticeWasStarted(int userId) {
             return Json(_practiceRepository.PracticeWasStarted(userId));
+        }
+
+        [HttpPost]
+        [Route("startDrillPractice")]
+        public JsonResult StartDrillPractice(int userId, int drillId) {
+            return Json(_practiceRepository.StartDrillPractice(userId, drillId));
         }
     }
 }

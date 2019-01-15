@@ -15,6 +15,5 @@ namespace BallingTimeBackend.Interfaces
         bool DeleteDribblingDrill(int drillId);
         bool DeleteTrainingProgram(int drillId, int difficultyId);
         bool DeleteDifficulty(int difficultyId);
-        bool DeleteUserProgress();
     }
 }

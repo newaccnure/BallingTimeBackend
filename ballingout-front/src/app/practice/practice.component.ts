@@ -3,7 +3,7 @@ import { PracticeService } from '../services/practice.service';
 import { AuthService } from '../services/auth.service';
 import { Router } from "@angular/router";
 import { Drill } from '../models/drill.model';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { DrillResultDialogComponent } from '../drill-result-dialog/drill-result-dialog.component';
 import { CurrentDrillService } from '../services/current-drill.service';
 import { TranslationService, LocaleService } from 'angular-l10n';
@@ -23,8 +23,9 @@ export class PracticeComponent implements OnInit {
     private currentDrillService: CurrentDrillService,
     private router: Router,
     public dialog: MatDialog,
-    public locale: LocaleService, 
-    public translation: TranslationService
+    public locale: LocaleService,
+    public translation: TranslationService,
+    public snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -50,8 +51,8 @@ export class PracticeComponent implements OnInit {
   }
 
   startDrillPractice(drill: Drill) {
+    this.practiceService.startDrillPractice(drill).subscribe(data => console.log(data))
     this.currentDrillService.changeDrill(drill);
     this.router.navigate(['/drill-practice']);
   }
-
 }

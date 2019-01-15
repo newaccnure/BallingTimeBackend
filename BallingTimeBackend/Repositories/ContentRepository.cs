@@ -153,14 +153,6 @@ namespace BallingTimeBackend.Repositories
             _context.SaveChanges();
             return true;
         }
-
-        public bool DeleteUserProgress()
-        {
-            var up1 = _context.UserProgresses.Where(up => up.Date.DayOfYear.Equals(DateTime.Now.AddDays(-1).DayOfYear));
-            _context.UserProgresses.RemoveRange(up1);
-            _context.SaveChanges();
-            return true;
-        }
-        
+       
     }
 }

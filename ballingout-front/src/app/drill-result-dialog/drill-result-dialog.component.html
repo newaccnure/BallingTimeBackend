@@ -3,7 +3,7 @@
   <mat-list>
     <mat-list-item> {{ 'Average speed' | translate:lang }}: {{drillStats?.averageSpeed}} </mat-list-item>
     <mat-list-item>{{ 'Repetitions per second' | translate:lang }}: {{drillStats?.repsPerSec}}</mat-list-item>
-    <mat-list-item> {{ 'Your grade' | translate:lang }}: {{drillStats?.accuracy * 10}}</mat-list-item>
+    <mat-list-item> {{ 'Your grade' | translate:lang }}: {{drillStats?.accuracy}}</mat-list-item>
     <mat-list-item l10nTranslate>Tip for you: {{this.currentTip}}</mat-list-item>
 
   </mat-list>

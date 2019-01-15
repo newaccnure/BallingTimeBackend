@@ -13,6 +13,7 @@ export class DrillPracticeCountdownComponent implements OnInit {
   time: number;
   drill: Drill;
   myTimer: any;
+  isFourtyFiveSecondExercise: boolean;
 
   constructor(
     private currentDrillService: CurrentDrillService,
@@ -20,21 +21,24 @@ export class DrillPracticeCountdownComponent implements OnInit {
     private router: Router,
   ) {
     this.addDrillToCompleted = this.addDrillToCompleted.bind(this);
-
-    this.time = 45;
   }
 
   ngOnInit() {
-    this.currentDrillService.currentDrill.subscribe(drill => this.drill = drill);
+    this.currentDrillService.currentDrill.subscribe(drill =>{ 
+      this.drill = drill;
+      this.time = drill.secondsForExercise;
+      this.isFourtyFiveSecondExercise = drill.secondsForExercise == 45;
+    });
+    
+    
     var test = this.changeTime.bind(this);
     this.myTimer = setInterval(test, 1000);
   }
 
   addDrillToCompleted(drill: Drill): void {
-    this.practiceService.addDrillToCompleted(drill.drillId).subscribe(data => {
-      drill.isCompleted = data;
-    });
+      drill.isCompleted = true;
   }
+  
   changeTime() {
     if (this.time != 0) {
       this.time -= 1

@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using BallingTimeBackend.Data_for_frontend;
 using BallingTimeBackend.Interfaces;
 using BallingTimeBackend.Models;
-using BallingTimeBackend.Data_for_frontend;
 using Newtonsoft.Json;
+using RestSharp;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BallingTimeBackend.Repositories
 {
@@ -262,6 +265,39 @@ namespace BallingTimeBackend.Repositories
         public bool PracticeWasStarted(int userId)
         {
             return _context.UserProgresses.Where(up => up.UserId == userId && up.Date == DateTime.Today).Any();
+        }
+
+        public async Task<bool> StartDrillPractice(int userId, int drillId)
+        {
+            if (!_context.Users.Where(user => user.Id == userId).Any()
+                || !_context.DribblingDrills.Where(drill => drill.Id == drillId).Any()) {
+                return false;
+            }
+
+            //TODO
+            var ip = "";
+            using (StreamReader r = new StreamReader("iot_connection.json"))
+            {
+                dynamic json = r.ReadToEnd();
+                var pair = JsonConvert.DeserializeObject(json);
+                ip = pair.ip;
+            }
+            RestClient client = new RestClient("http://" + ip + ":5000");
+
+            var request = new RestRequest("/startDrill", Method.POST);
+
+            var userDifficulty = _context.Users.Where(user => user.Id == userId).First().DifficultyId;
+
+            var secondsForExercise = _context.Difficulties.Where(dif => dif.Id == userDifficulty).First().SecondsForExercise;
+
+            request.AddJsonBody(new { drill_id = drillId, exec_time = secondsForExercise });
+
+            var response = await client.ExecuteTaskAsync<List<double>>(request);
+
+            var data = response.Data;
+
+            return AddDrillToCompleted(userId, drillId, data[0], data[1], secondsForExercise / 3);
+            
         }
     }
 }

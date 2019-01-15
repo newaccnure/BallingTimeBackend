@@ -39,7 +39,7 @@ export class SignUpComponent implements OnInit {
   signUp() {
     
     var indexArray = [];
-    this.array.forEach(element => {
+    this.array.forEach((element: string) => {
       indexArray.push(this.daysOfWeekNumbers[this.daysOfWeek.indexOf(element)])
     });
     this.user.PracticeDays = indexArray;

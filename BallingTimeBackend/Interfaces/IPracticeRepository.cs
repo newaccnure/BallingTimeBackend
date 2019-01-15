@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using BallingTimeBackend.Data_for_frontend;
 
 namespace BallingTimeBackend.Interfaces
@@ -12,5 +14,6 @@ namespace BallingTimeBackend.Interfaces
             double averageSpeed, double averageAccuracy, double repeatitionsPerSecond);
         DrillStats GetDrillStatsById(int userId, int drillId);
         bool PracticeWasStarted(int userId);
+        Task<bool> StartDrillPractice(int userId, int drillId);
     }
 }

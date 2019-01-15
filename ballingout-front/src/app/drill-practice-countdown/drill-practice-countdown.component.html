@@ -1,9 +1,19 @@
 <app-header></app-header>
 <p class="drill-name" l10nTranslate>{{drill.name}}</p>
 
-<div id="countdown">
-    <div id="countdown-number">{{time}}</div>
-    <svg>
-        <circle r="180" cx="200" cy="200"></circle>
-    </svg>
+<div *ngIf="this.isFourtyFiveSecondExercise; else thirtySecondExercise">
+    <div id="countdown">
+        <div id="countdown-number">{{time}}</div>
+        <svg>
+            <circle id="time45" r="180" cx="200" cy="200"></circle>
+        </svg>
+    </div>
 </div>
+<ng-template #thirtySecondExercise>
+    <div id="countdown">
+        <div id="countdown-number">{{time}}</div>
+        <svg>
+            <circle id="time30" r="180" cx="200" cy="200"></circle>
+        </svg>
+    </div>
+</ng-template>

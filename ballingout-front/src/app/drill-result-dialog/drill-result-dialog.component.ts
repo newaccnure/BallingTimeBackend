@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Drill } from '../models/drill.model';
@@ -12,7 +12,7 @@ import { TranslationService, LocaleService, Language } from 'angular-l10n';
   templateUrl: './drill-result-dialog.component.html',
   styleUrls: ['./drill-result-dialog.component.css']
 })
-export class DrillResultDialogComponent implements OnInit, OnDestroy {
+export class DrillResultDialogComponent implements OnInit {
   tips = TIPS;
   currentTip: string;
   drillStats: DrillStats;
@@ -37,12 +37,8 @@ export class DrillResultDialogComponent implements OnInit, OnDestroy {
     });
 
   }
-  ngOnDestroy(){
-        
-  }
 
   onOkClick(): void {
     this.dialogRef.close();
   }
-
 }
